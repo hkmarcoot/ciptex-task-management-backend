@@ -1,0 +1,16 @@
+{
+  "name": "task-man",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.635.0",
+    "aws-sdk": "^2.1680.0",
+    "uuid": "^10.0.0"
+  }
+}
