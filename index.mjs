@@ -1,18 +1,58 @@
 // import AWS from "aws-sdk";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
-  DynamoDBClient,
+  DynamoDBDocumentClient,
   ScanCommand,
-  PutItemCommand,
-  UpdateItemCommand,
-  DeleteItemCommand,
-} from "@aws-sdk/client-dynamodb";
-// import {
-//   ApiGatewayManagementApiClient,
-//   PostToConnectionCommand,
-// } from "@aws-sdk/client-apigatewaymanagementapi";
+  PutCommand,
+  UpdateCommand,
+  DeleteCommand,
+} from "@aws-sdk/lib-dynamodb";
+import {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand,
+} from "@aws-sdk/client-apigatewaymanagementapi";
 import { v4 as uuidv4 } from "uuid";
 
 const client = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(client);
+
+async function on_connect(connectionId) {
+  try {
+    const command = new PutCommand({
+      TableName: "usersTable",
+      Item: {
+        connectionId: connectionId,
+      },
+    });
+
+    await docClient.send(command);
+  } catch (error) {
+    console.error("Error in on_connect: ", error);
+    return { statusCode: 500, body: "Failed to connect" };
+  }
+  return {
+    statusCode: 200,
+  };
+}
+
+async function on_disconnect(connectionId) {
+  try {
+    const command = new DeleteCommand({
+      TableName: "usersTable",
+      Key: {
+        connectionId: connectionId,
+      },
+    });
+
+    await docClient.send(command);
+  } catch (error) {
+    console.error("Error in on_disconnect: ", error);
+    return { statusCode: 500, body: "Failed to disconnect" };
+  }
+  return {
+    statusCode: 200,
+  };
+}
 
 async function on_scanEntireTable() {
   try {
@@ -26,7 +66,7 @@ async function on_scanEntireTable() {
       TableName: "itemsTable",
     };
     const command = new ScanCommand(input);
-    const response = await client.send(command);
+    const response = await docClient.send(command);
     console.log("result: " + JSON.stringify(response));
     return {
       statusCode: 200,
@@ -45,9 +85,9 @@ async function on_createItem(body) {
     const parsedBody = JSON.parse(body);
 
     const item = {
-      itemId: { S: uuidv4() },
-      title: { S: parsedBody.title },
-      status: { S: parsedBody.status },
+      itemId: uuidv4(),
+      title: parsedBody.title,
+      status: parsedBody.status,
     };
 
     const params = {
@@ -55,7 +95,7 @@ async function on_createItem(body) {
       Item: item,
     };
 
-    const data = await client.send(new PutItemCommand(params));
+    const data = await docClient.send(new PutCommand(params));
     console.log("result: " + JSON.stringify(data));
     return {
       statusCode: 200,
@@ -67,7 +107,7 @@ async function on_createItem(body) {
   }
 }
 
-async function on_updateStatus(body) {
+async function on_updateStatus(body, domainName, stage) {
   try {
     const parsedBody = JSON.parse(body);
     const targetId = parsedBody.itemId;
@@ -78,26 +118,43 @@ async function on_updateStatus(body) {
         "#ST": "status",
       },
       ExpressionAttributeValues: {
-        ":t": {
-          S: newStatus,
-        },
+        ":t": newStatus,
       },
       Key: {
-        itemId: {
-          S: targetId,
-        },
+        itemId: targetId,
       },
       ReturnValues: "ALL_NEW",
       TableName: "itemsTable",
       UpdateExpression: "SET #ST = :t",
     };
-    const command = new UpdateItemCommand(input);
-    const response = await client.send(command);
+    const command = new UpdateCommand(input);
+    const response = await docClient.send(command);
     console.log("result: " + JSON.stringify(response));
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "Item updated", response }),
     };
+
+    // The below part will send all the items to all clients in thier terminal
+    // const input2 = {
+
+    //   TableName: "",
+    // };
+    // const ddbcommand = new ScanCommand(input2);
+    // let connections;
+    // try {
+    //   connections = await docClient.send(ddbcommand);
+    // } catch (error) {
+    //   console.log(error);
+    //   return {
+    //     statusCode: 500,
+    //   };
+    // }
+
+    // const callbackAPI = new ApiGatewayManagementApiClient({
+    //   apiVersion: '2018-11-29',
+    //   endpoint: 'https://' + domainName + '/' + stage,
+    //   });
   } catch (error) {
     console.error("Error in on_updateStatus: ", error);
     return { statusCode: 500, body: "Failed to update item" };
@@ -111,14 +168,12 @@ async function on_deleteItem(body) {
 
     const input = {
       Key: {
-        itemId: {
-          S: targetId,
-        },
+        itemId: targetId,
       },
       TableName: "itemsTable",
     };
-    const command = new DeleteItemCommand(input);
-    const response = await client.send(command);
+    const command = new DeleteCommand(input);
+    const response = await docClient.send(command);
     console.log("result: " + JSON.stringify(response));
     return {
       statusCode: 200,
@@ -153,12 +208,12 @@ export const handler = async (event) => {
 
   switch (routeKey) {
     case "$connect":
-      console.log("Connection begins. connectionId: " + connectionId);
-      // await on_connect(connectionId, user_name, user_id);
-      // return connecting(connectionId);
+      // console.log("Connection begins. connectionId: " + connectionId);
+      await on_connect(connectionId);
       break;
     case "$disconnect":
-      console.log("disconnected.");
+      // console.log("disconnected.");
+      await on_disconnect(connectionId);
       break;
     case "test":
       // const callbackUrl = `https://${domainName}/${stage}`;
@@ -173,7 +228,7 @@ export const handler = async (event) => {
       return res;
     // break;
     case "updateStatus":
-      var res = await on_updateStatus(body);
+      var res = await on_updateStatus(body, domainName, stage);
       return res;
     // break;
     case "deleteItem":
