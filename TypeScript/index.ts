@@ -1,4 +1,3 @@
-// import AWS from "aws-sdk";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
@@ -16,7 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-async function on_connect(myconnectionId) {
+async function on_connect(myconnectionId: string) {
   try {
     if (!myconnectionId) return;
     const command = new PutCommand({
@@ -36,7 +35,7 @@ async function on_connect(myconnectionId) {
   };
 }
 
-async function on_disconnect(myconnectionId) {
+async function on_disconnect(myconnectionId: string) {
   try {
     if (!myconnectionId) return;
     const command = new DeleteCommand({
@@ -80,10 +79,14 @@ async function on_scanEntireTable() {
   }
 }
 
-async function sendAllItemsToClients(myconnectionId, domainName, stage) {
+async function sendAllItemsToClients(
+  myconnectionId: string,
+  domainName: string,
+  stage: string
+) {
   /*
-     The below part will send all the items to all clients in thier terminal
-     */
+       The below part will send all the items to all clients in thier terminal
+       */
 
   // Firstly, get all clients from the usersTable in DynamoDB
   const input2 = {
@@ -147,10 +150,13 @@ async function sendAllItemsToClients(myconnectionId, domainName, stage) {
   }
 }
 
-async function on_createItem(myconnectionId, body, domainName, stage) {
+async function on_createItem(
+  myconnectionId: string,
+  body: any,
+  domainName: string,
+  stage: string
+) {
   try {
-    // const title = event.body.title;
-    // const status = event.body.status;
     const parsedBody = JSON.parse(body);
 
     const item = {
@@ -172,8 +178,8 @@ async function on_createItem(myconnectionId, body, domainName, stage) {
     // };
 
     /*
-     The below function will send all the items to all clients in thier terminal
-    */
+       The below function will send all the items to all clients in thier terminal
+      */
     await sendAllItemsToClients(myconnectionId, domainName, stage);
 
     return { statusCode: 200 };
@@ -183,7 +189,12 @@ async function on_createItem(myconnectionId, body, domainName, stage) {
   }
 }
 
-async function on_updateStatus(myconnectionId, body, domainName, stage) {
+async function on_updateStatus(
+  myconnectionId: string,
+  body: any,
+  domainName: string,
+  stage: string
+) {
   try {
     // if (!myconnectionId) return;
     const parsedBody = JSON.parse(body);
@@ -213,8 +224,8 @@ async function on_updateStatus(myconnectionId, body, domainName, stage) {
     // };
 
     /*
-      The below function will send all the items to all clients in thier terminal
-    */
+        The below function will send all the items to all clients in thier terminal
+      */
     await sendAllItemsToClients(myconnectionId, domainName, stage);
 
     return { statusCode: 200 };
@@ -224,7 +235,12 @@ async function on_updateStatus(myconnectionId, body, domainName, stage) {
   }
 }
 
-async function on_deleteItem(myconnectionId, body, domainName, stage) {
+async function on_deleteItem(
+  myconnectionId: string,
+  body: any,
+  domainName: string,
+  stage: string
+) {
   try {
     const parsedBody = JSON.parse(body);
     const targetId = parsedBody.itemId;
@@ -244,8 +260,8 @@ async function on_deleteItem(myconnectionId, body, domainName, stage) {
     // };
 
     /*
-      The below function will send all the items to all clients in thier terminal
-    */
+        The below function will send all the items to all clients in thier terminal
+      */
     await sendAllItemsToClients(myconnectionId, domainName, stage);
 
     return { statusCode: 200 };
@@ -255,7 +271,7 @@ async function on_deleteItem(myconnectionId, body, domainName, stage) {
   }
 }
 
-function testing(myconnectionId, domainName, stage) {
+function testing(myconnectionId: string, domainName: string, stage: string) {
   var outputTest = {
     message:
       "Hello from Lambda! This is the test route. connectionId: " +
@@ -272,7 +288,7 @@ function testing(myconnectionId, domainName, stage) {
   return responseTest;
 }
 
-export const handler = async (event) => {
+export const handler = async (event: any) => {
   const {
     body,
     requestContext: {
@@ -282,38 +298,35 @@ export const handler = async (event) => {
       stage,
     },
   } = event;
-  // const title = event.body.title;
-  // const status = event.body.status;
 
   switch (routeKey) {
     case "$connect":
-      // console.log("Connection begins. connectionId: " + connectionId);
       await on_connect(myconnectionId);
       break;
+
     case "$disconnect":
-      // console.log("disconnected.");
       await on_disconnect(myconnectionId);
       break;
+
     case "test":
-      // const callbackUrl = `https://${domainName}/${stage}`;
-      // await on_message(connectionId, body, callbackUrl);
       return testing(myconnectionId, domainName, stage);
-    // break;
+
     case "scanEntireTable":
-      var res = await on_scanEntireTable();
-      return res;
+      var res1 = await on_scanEntireTable();
+      return res1;
+
     case "createItem":
-      var res = await on_createItem(myconnectionId, body, domainName, stage);
-      return res;
-    // break;
+      var res2 = await on_createItem(myconnectionId, body, domainName, stage);
+      return res2;
+
     case "updateStatus":
-      var res = await on_updateStatus(myconnectionId, body, domainName, stage);
-      return res;
-    // break;
+      var res3 = await on_updateStatus(myconnectionId, body, domainName, stage);
+      return res3;
+
     case "deleteItem":
-      var res = await on_deleteItem(myconnectionId, body, domainName, stage);
-      return res;
-    // break;
+      var res4 = await on_deleteItem(myconnectionId, body, domainName, stage);
+      return res4;
+
     default:
       break;
   }
