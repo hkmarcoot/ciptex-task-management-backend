@@ -149,7 +149,7 @@ Three AWS SDK packages are used in the WebSocket API when creating the RESTful A
 
 @aws-sdk/client-apigatewaymanagementapi is used to send immediate message to all connected clients by using ApiGatewayManagementApiClient and PostToConnectionCommand.
 
-Again, I check if the routes have enabled two-way communication and are proxy integration.
+Again, I checked if the routes have enabled two-way communication and are proxy integration.
 
 ## Create DynamoDB For itemsTable and usersTable
 
