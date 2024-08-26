@@ -24,9 +24,9 @@ Here is my journey to setup the WebSocket API with Lambda Function and DynamoDB.
 
 11. [Provide Permissions To Lambda Function](#provide-permissions-to-lambda-function)
 
-12. [Testing In Postman](#testing-in-postman)
+12. [Test In Postman](#test-in-postman)
 
-13. [Testing In Terminals](#testing-in-terminals)
+13. [Test In Terminals](#test-in-terminals)
 
 14. [Notice: Tackle with errors](#notice-tackle-with-errors)
 
@@ -173,7 +173,7 @@ From the article [How to Use AWS Websocket API with React web application to Wor
 
 The guide to give permissions to Lambda function can be found here: [Add DynamoDB Permission To Lambda](https://dynobase.dev/dynamodb-permissions-lambda/)
 
-## Testing In Postman
+## Test In Postman
 
 Test the WebSocket API by using Postman with an example here: [Send a callback message to the client](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-how-to-call-websocket-api-connections.html)
 
@@ -185,7 +185,7 @@ https://144lhasnn9.execute-api.eu-north-1.amazonaws.com/production/@connections
 
 Notice that access key id, secret access key and session token are needed to provide to the POST request, which can be found from the AWS access portal.
 
-## Testing In Terminals
+## Test In Terminals
 
 Testing are successful with the following commands in the terminal:
 
@@ -208,6 +208,8 @@ Testing are successful with the following commands in the terminal:
 > {"action": "scanEntireTable"}
 < {"message":"Items scanned","response":{"$metadata":{"httpStatusCode":200,"requestId":"M2SMJ0CLDS00VGTFQ5GGTLKHDFVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":2,"Items":[{"itemId":{"S":"thisispartitionkey"},"status":{"S":"todo"},"title":{"S":"This is the first task created in platform"}},{"itemId":{"S":"7085b41f-154d-4745-9556-06ce75dd8df4"},"status":{"S":"todo"},"title":{"S":"This is the first task from terminal"}}],"ScannedCount":2}}
 ```
+
+I also opened another terminal and found out it could receive a message every time the first terminal performs createItem, updateStatus and deleteItem.
 
 ## Notice: Tackle with errors
 
