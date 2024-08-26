@@ -2,7 +2,7 @@
 
 Here is my journey to setup the WebSocket API with Lambda Function and DynamoDB.
 
-1. [Setup An Admin Account and IAM Account](#setup-an-admin-account-and-iam-account)
+1. [Setup An Admin Account and An IAM Account](#setup-an-admin-account-and-an-iam-account)
 
 2. [Get The Access Key By Using The IAM Account](#get-the-access-key-by-using-the-iam-account)
 
@@ -20,7 +20,7 @@ Here is my journey to setup the WebSocket API with Lambda Function and DynamoDB.
 
 9. [Create test, scanEntireTable, createItem, updateStatus And deleteItem Routes, And Their Lambda Function](#create-test-scanentiretable-createitem-updatestatus-and-deleteitem-routes-and-their-lambda-function)
 
-10. [Create DynamoDB For itemsTable and usersTable](#create-dynamodb-for-itemstable-and-userstable)
+10. [Create itemsTable and usersTable In DynamoDB](#create-itemstable-and-userstable-in-dynamodb)
 
 11. [Provide Permissions To Lambda Function](#provide-permissions-to-lambda-function)
 
@@ -151,7 +151,7 @@ Three AWS SDK packages are used in the WebSocket API when creating the RESTful A
 
 Again, I checked if the routes have enabled two-way communication and are proxy integration.
 
-## Create DynamoDB For itemsTable and usersTable
+## Create itemsTable and usersTable In DynamoDB
 
 I create two tables, one for the todo items and one for the users' connectionId.
 
