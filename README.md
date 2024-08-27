@@ -18,7 +18,7 @@ Here is my journey to setup the WebSocket API with Lambda Function and DynamoDB.
 
 8. [Test In Terminal With wscat](#test-in-terminal-with-wscat)
 
-9. [Create test, scanEntireTable, createItem, updateStatus And deleteItem Routes, And Their Lambda Function](#create-test-scanentiretable-createitem-updatestatus-and-deleteitem-routes-and-their-lambda-function)
+9. [Create scanEntireTable, createItem, updateStatus And deleteItem Routes, And Their Lambda Function](#create-scanentiretable-createitem-updatestatus-and-deleteitem-routes-and-their-lambda-function)
 
 10. [Create itemsTable and usersTable In DynamoDB](#create-itemstable-and-userstable-in-dynamodb)
 
@@ -79,7 +79,7 @@ To create a WebSocket API
 
 6. For Predefined routes, choose Add $connect, Add $disconnect, and Add $default. The $connect and $disconnect routes are special routes that API Gateway invokes automatically when a client connects to or disconnects from an API. API Gateway invokes the $default route when no other routes match a request.
 
-7. For Custom routes, choose Add custom route. For Route key, enter "test". This custom route handles messages that are sent to connected clients.
+7. For Custom routes, choose Add custom route. For Route key, enter "test". This custom route handles test messages that are sent to connected clients.
 
 8. Choose Next.
 
@@ -128,13 +128,13 @@ The WebSocket API returns me a string:
 < "Hello from Lambda! This is my first output!"
 ```
 
-## Create test, scanEntireTable, createItem, updateStatus And deleteItem Routes, And Their Lambda Function
+## Create scanEntireTable, createItem, updateStatus And deleteItem Routes, And Their Lambda Function
 
 The test route and Lambda function are only for testing purpose.
 
 The scanEntireTable, createItem, updateStatus and deleteItem routes and Lambda functions are the GET, POST, PUT and DELETE in RESTful API.
 
-They are created by refering examples from these resources:
+Their routes are created by repeated step 4, and their Lambda functions are created by refering examples from these resources:
 
 - [The App Creation Template For AWS CloudFormation](https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-chat-app.html#websocket-api-chat-app-create-dependencies)
 - [Amazon DynamoDB References](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/dynamodb/)
