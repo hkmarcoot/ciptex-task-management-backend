@@ -1,5 +1,7 @@
 # ciptex-task-management-backend
 
+The current Lambda function used in the WebSocket API is the JavaScript one.
+
 Here is my journey to setup the WebSocket API with Lambda Function and DynamoDB.
 
 1. [Setup An Admin Account and An IAM Account](#setup-an-admin-account-and-an-iam-account)
@@ -134,7 +136,7 @@ The test route and Lambda function are only for testing purpose.
 
 The scanEntireTable, createItem, updateStatus and deleteItem routes and Lambda functions are the GET, POST, PUT and DELETE in RESTful API.
 
-Their routes are created by repeated step 4, and their Lambda functions are created by refering examples from these resources:
+Their routes are created by repeating step 4, and their Lambda functions are created by refering examples from these resources:
 
 - [The App Creation Template For AWS CloudFormation](https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-chat-app.html#websocket-api-chat-app-create-dependencies)
 - [Amazon DynamoDB References](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/dynamodb/)
@@ -161,7 +163,7 @@ The todo itemsTable is created because every item in the todo list needs to be s
 - title is a string typed by the app user in a input box.
 - status is a string selected by the app user in a dropdown list.
 
-The usersTable only saves the connectionId, which is a string created when a client connects to the WebSOcket API.
+The usersTable only saves the connectionId, which is a string created when a client connects to the WebSocket API.
 
 The DynamoDB table creation guide can be found from this tutorial:
 
