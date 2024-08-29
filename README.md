@@ -2,6 +2,10 @@
 
 The current Lambda function used in the WebSocket API is the JavaScript one.
 
+This is a task management app using WebSocket API with Lambda function and DynamoDB in the backend, and using Sockette websocket and Atlassian Drag and Drop Library in the React frontend.
+
+The backend used JavaScript and implemented real-time updates with WebSocket. It is a RESTful API and data is stored in AWS DynamoDB.
+
 Here is my journey to setup the WebSocket API with Lambda Function and DynamoDB.
 
 1. [Setup An Admin Account and An IAM Account](#setup-an-admin-account-and-an-iam-account)
